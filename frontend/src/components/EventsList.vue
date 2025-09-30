@@ -20,6 +20,7 @@
         :class="`event-${event.type}`"
       >
         <div class="event-header">
+          <span class="event-id">{{ event.id }}</span>
           <h3>{{ event.name }}</h3>
           <span class="event-type">{{ event.type }}</span>
         </div>

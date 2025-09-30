@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Patch } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { Event } from '../entities/event.entity';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Controller('events')
 export class EventsController {
@@ -17,13 +19,13 @@ export class EventsController {
   }
 
   @Post()
-  create(@Body() eventData: Partial<Event>): Promise<Event> {
-    return this.eventsService.create(eventData);
+  create(@Body() createEventDto: CreateEventDto) {
+    return this.eventsService.create(createEventDto);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() eventData: Partial<Event>): Promise<Event> {
-    return this.eventsService.update(id, eventData);
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() updateEventDto: UpdateEventDto) {
+    return this.eventsService.update(+id, updateEventDto);
   }
 
   @Delete(':id')
