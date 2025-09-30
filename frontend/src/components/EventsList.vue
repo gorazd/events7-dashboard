@@ -1,75 +1,81 @@
 <template>
-  <div class="events-container">
-    <h2>Events Dashboard</h2>
-    <div>
-      <strong>Total Events: {{ events.length }}</strong>
-    </div>
+  <article class="events-container">
+    <header class="events-header">
+      <h2>Events Management</h2>
+      <section class="events-summary">
+        <p><strong>Total Events: {{ events.length }}</strong></p>
+      </section>
+    </header>
     
-    <div class="actions">
+    <nav class="actions">
       <button @click="openCreateForm" class="create-btn">
         Create New Event
       </button>
       <button @click="fetchEvents" :disabled="loading" class="refresh-btn">
         {{ loading ? 'Loading...' : 'Refresh Events' }}
       </button>
-    </div>
+    </nav>
 
-    <div v-if="loading" class="loading">Loading events...</div>
-    <div v-else-if="error" class="error">Error: {{ error }}</div>
-    <div v-else-if="events.length === 0" class="empty">No events found</div>
-    
-    <div v-else class="events-grid">
-      <!-- Grid Header -->
-      <div class="event-card event-header-row">
-        <span class="event-id"><strong>ID</strong></span>
-        <div class="event-header"><strong>Name</strong></div>
-        <span class="event-type"><strong>Type</strong></span>
-        <p class="event-description"><strong>Description</strong></p>
-        <div class="event-footer"><strong>Priority</strong></div>
-        <span class="created"><strong>Created</strong></span>
-        <span class="created"><strong>Last Updated</strong></span>
-        <div class="event-actions"><strong>Actions</strong></div>
-      </div>
-      <!-- Event Rows -->
-      <div 
-        v-for="event in events" 
-        :key="event.id" 
-        class="event-card"
-        :class="`event-${event.type}`"
-      >
-      <span class="event-id">{{ event.id }}</span>
-        <div class="event-header">
-          <h3>{{ event.name }}</h3>
-        </div>
-        <span class="event-type">{{ event.type }}</span>
-        
-        <p class="event-description">{{ event.description }}</p>
-        
-        <div class="event-footer">
-          <span class="priority">{{ event.priority }}</span>
-        </div>
-        <span class="created">{{ formatDate(event.createdAt) }}</span>
-        <span class="updated">{{ formatDate(event.updatedAt) }}</span>
+    <section class="events-content">
+      <div v-if="loading" class="loading">Loading events...</div>
+      <div v-else-if="error" class="error">Error: {{ error }}</div>
+      <div v-else-if="events.length === 0" class="empty">No events found</div>
+      
+      <section v-else class="events-grid">
+        <h3 class="sr-only">Events List</h3>
+        <!-- Grid Header -->
+        <header class="event-card event-header-row">
+          <span class="event-id"><strong>ID</strong></span>
+          <span class="event-header"><strong>Name</strong></span>
+          <span class="event-type"><strong>Type</strong></span>
+          <span class="event-description"><strong>Description</strong></span>
+          <span class="event-footer"><strong>Priority</strong></span>
+          <span class="created"><strong>Created</strong></span>
+          <span class="created"><strong>Last Updated</strong></span>
+          <span class="event-actions"><strong>Actions</strong></span>
+        </header>
+        <!-- Event Rows -->
+        <article 
+          v-for="event in events" 
+          :key="event.id" 
+          class="event-card"
+          :class="`event-${event.type}`"
+        >
+          <span class="event-id">{{ event.id }}</span>
+          <header class="event-header">
+            <h4>{{ event.name }}</h4>
+          </header>
+          <span class="event-type">{{ event.type }}</span>
+          
+          <p class="event-description">{{ event.description }}</p>
+          
+          <footer class="event-footer">
+            <span class="priority">Priority: {{ event.priority }}</span>
+          </footer>
+          <time class="created">{{ formatDate(event.createdAt) }}</time>
+          <time class="updated">{{ formatDate(event.updatedAt) }}</time>
 
-        <div class="event-actions">
-          <button @click="openEditForm(event)" class="edit-btn">
-            Edit
-          </button>
-          <button @click="deleteEvent(event.id)" class="delete-btn">
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
-  <!-- Event Form Modal -->
-  <EventsForm
-    v-if="showForm"
-    :event="selectedEvent"
-    :is-open="showForm"
-    @close="closeForm"
-    @save="handleEventSave"
-  />
-  </div>
+          <nav class="event-actions">
+            <button @click="openEditForm(event)" class="edit-btn">
+              Edit
+            </button>
+            <button @click="deleteEvent(event.id)" class="delete-btn">
+              Delete
+            </button>
+          </nav>
+        </article>
+      </section>
+    </section>
+  
+    <!-- Event Form Modal -->
+    <EventsForm
+      v-if="showForm"
+      :event="selectedEvent"
+      :is-open="showForm"
+      @close="closeForm"
+      @save="handleEventSave"
+    />
+  </article>
 </template>
 
 <script setup lang="ts">

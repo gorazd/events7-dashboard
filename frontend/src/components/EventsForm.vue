@@ -1,11 +1,11 @@
 <template>
-  <div class="event-form-container">
+  <section class="event-form-container" role="dialog" aria-modal="true" aria-labelledby="form-title">
     <div class="form-overlay" @click="closeForm"></div>
-    <div class="event-form">
-      <div class="form-header">
-        <h3>{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h3>
-        <button @click="closeForm" class="close-btn">&times;</button>
-      </div>
+    <article class="event-form">
+      <header class="form-header">
+        <h3 id="form-title">{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h3>
+        <button @click="closeForm" class="close-btn" aria-label="Close form">&times;</button>
+      </header>
       
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
@@ -129,11 +129,11 @@
         </div>
       </form>
 
-      <div v-if="error" class="error-message">
+      <footer v-if="error" class="error-message">
         {{ error }}
-      </div>
-    </div>
-  </div>
+      </footer>
+    </article>
+  </section>
 </template>
 
 <script setup lang="ts">
