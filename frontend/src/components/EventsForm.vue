@@ -15,7 +15,10 @@
       
       <form @submit.prevent="handleSubmit" @keydown="handleFormKeydown">
         <div class="form-group">
-          <label for="name">Event Name *</label>
+          <label for="name">
+            Event Name 
+            <span class="required-indicator" aria-label="required">*</span>
+          </label>
           <input
             id="name"
             v-model="formData.name"
@@ -23,12 +26,21 @@
             required
             placeholder="Enter event name"
             class="form-input"
+            :class="{ 'error': fieldErrors.name }"
+            :aria-invalid="!!fieldErrors.name"
+            :aria-describedby="fieldErrors.name ? 'name-error' : 'name-hint'"
           />
-          <small class="form-hint">Will be saved as: {{ toKebabCase(formData.name) }}</small>
+          <small id="name-hint" class="form-hint">Will be saved as: {{ toKebabCase(formData.name) }}</small>
+          <div v-if="fieldErrors.name" id="name-error" class="field-error" role="alert">
+            {{ fieldErrors.name }}
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="description">Description *</label>
+          <label for="description">
+            Description 
+            <span class="required-indicator" aria-label="required">*</span>
+          </label>
           <textarea
             id="description"
             v-model="formData.description"
@@ -36,12 +48,22 @@
             placeholder="Enter event description"
             class="form-textarea"
             rows="3"
+            :class="{ 'error': fieldErrors.description }"
+            :aria-invalid="!!fieldErrors.description"
+            :aria-describedby="fieldErrors.description ? 'description-error' : undefined"
           ></textarea>
+          <div v-if="fieldErrors.description" id="description-error" class="field-error" role="alert">
+            {{ fieldErrors.description }}
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Event Type *</label>
-          <div class="radio-group">
+          <fieldset class="form-fieldset">
+            <legend class="form-label">
+              Event Type 
+              <span class="required-indicator" aria-label="required">*</span>
+            </legend>
+            <div class="radio-group" :aria-describedby="fieldErrors.type ? 'type-error' : undefined">
             <div class="radio-option">
               <input
                 id="type-crosspromo"
@@ -51,6 +73,7 @@
                 name="eventType"
                 class="radio-input"
                 required
+                :aria-invalid="!!fieldErrors.type"
               />
               <label for="type-crosspromo" class="radio-label">
                 <span class="radio-custom"></span>
@@ -66,6 +89,7 @@
                 :value="EVENT_TYPES.LIVEOPS"
                 name="eventType"
                 class="radio-input"
+                :aria-invalid="!!fieldErrors.type"
               />
               <label for="type-liveops" class="radio-label">
                 <span class="radio-custom"></span>
@@ -81,6 +105,7 @@
                 :value="EVENT_TYPES.APP"
                 name="eventType"
                 class="radio-input"
+                :aria-invalid="!!fieldErrors.type"
               />
               <label for="type-app" class="radio-label">
                 <span class="radio-custom"></span>
@@ -97,6 +122,7 @@
                 name="eventType"
                 class="radio-input"
                 :disabled="!adsTypeAllowed"
+                :aria-invalid="!!fieldErrors.type"
               />
               <label for="type-ads" class="radio-label" :class="{ 'disabled': !adsTypeAllowed }">
                 <span class="radio-custom"></span>
@@ -108,11 +134,17 @@
                 </span>
               </label>
             </div>
-          </div>
+            <div v-if="fieldErrors.type" id="type-error" class="field-error" role="alert">
+              {{ fieldErrors.type }}
+            </div>
+          </fieldset>
         </div>
 
         <div class="form-group">
-          <label for="priority">Priority *</label>
+          <label for="priority">
+            Priority 
+            <span class="required-indicator" aria-label="required">*</span>
+          </label>
           <input
             id="priority"
             v-model.number="formData.priority"
@@ -122,7 +154,14 @@
             max="10"
             placeholder="0-10"
             class="form-input"
+            :class="{ 'error': fieldErrors.priority }"
+            :aria-invalid="!!fieldErrors.priority"
+            :aria-describedby="fieldErrors.priority ? 'priority-error' : 'priority-hint'"
           />
+          <small id="priority-hint" class="form-hint">Enter a value between 0-10</small>
+          <div v-if="fieldErrors.priority" id="priority-error" class="field-error" role="alert">
+            {{ fieldErrors.priority }}
+          </div>
         </div>
 
         <div class="form-actions">
@@ -173,6 +212,14 @@ const loading = ref(false)
 const error = ref('')
 const adsTypeAllowed = ref(false)
 
+// Form validation state
+const fieldErrors = reactive({
+  name: '',
+  description: '',
+  type: '',
+  priority: ''
+})
+
 const formData = reactive<FormData>({
   name: '',
   description: '',
@@ -195,6 +242,49 @@ onMounted(async () => {
   }
 })
 
+// Form validation function
+const validateForm = () => {
+  // Clear previous errors
+  fieldErrors.name = ''
+  fieldErrors.description = ''
+  fieldErrors.type = ''
+  fieldErrors.priority = ''
+  
+  let isValid = true
+  
+  // Validate name
+  if (!formData.name.trim()) {
+    fieldErrors.name = 'Event name is required'
+    isValid = false
+  } else if (formData.name.trim().length < 3) {
+    fieldErrors.name = 'Event name must be at least 3 characters'
+    isValid = false
+  }
+  
+  // Validate description
+  if (!formData.description.trim()) {
+    fieldErrors.description = 'Description is required'
+    isValid = false
+  } else if (formData.description.trim().length < 10) {
+    fieldErrors.description = 'Description must be at least 10 characters'
+    isValid = false
+  }
+  
+  // Validate type
+  if (!formData.type) {
+    fieldErrors.type = 'Event type is required'
+    isValid = false
+  }
+  
+  // Validate priority
+  if (formData.priority < 0 || formData.priority > 10) {
+    fieldErrors.priority = 'Priority must be between 0 and 10'
+    isValid = false
+  }
+  
+  return isValid
+}
+
 // Define resetForm before the watch function
 const resetForm = () => {
   formData.id = undefined
@@ -203,6 +293,11 @@ const resetForm = () => {
   formData.type = ''
   formData.priority = 0
   error.value = ''
+  // Clear field errors
+  fieldErrors.name = ''
+  fieldErrors.description = ''
+  fieldErrors.type = ''
+  fieldErrors.priority = ''
 }
 
 // Watch for prop changes to populate form
@@ -236,6 +331,11 @@ const toKebabCase = (str: string): string => {
 }
 
 const handleSubmit = async () => {
+  // First validate the form
+  if (!validateForm()) {
+    return
+  }
+
   loading.value = true
   error.value = ''
 
@@ -580,6 +680,54 @@ form {
   outline: 2px solid #646cff;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Required indicator styling */
+.required-indicator {
+  color: #d73a49;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+/* Form fieldset styling */
+.form-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.form-fieldset legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+/* Error states */
+.form-input.error,
+.form-textarea.error {
+  border-color: #d73a49;
+  background-color: #fff5f5;
+}
+
+.field-error {
+  color: #d73a49;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-error::before {
+  content: "⚠";
+  font-weight: bold;
+}
+
+.form-hint {
+  color: #6a737d;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
 }
 
 .error-message {
