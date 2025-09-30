@@ -3,6 +3,9 @@
     <h2>Events Dashboard</h2>
     
     <div class="actions">
+      <button @click="openCreateForm" class="create-btn">
+        Create New Event
+      </button>
       <button @click="fetchEvents" :disabled="loading" class="refresh-btn">
         {{ loading ? 'Loading...' : 'Refresh Events' }}
       </button>
@@ -33,17 +36,29 @@
         </div>
         
         <div class="event-actions">
+          <button @click="openEditForm(event)" class="edit-btn">
+            Edit
+          </button>
           <button @click="deleteEvent(event.id)" class="delete-btn">
             Delete
           </button>
         </div>
       </div>
     </div>
+  <!-- Event Form Modal -->
+  <EventsForm
+    v-if="showForm"
+    :event="selectedEvent"
+    :is-open="showForm"
+    @close="closeForm"
+    @save="handleEventSave"
+  />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import EventsForm from './EventsForm.vue'
 
 interface Event {
   id: number
@@ -58,6 +73,8 @@ interface Event {
 const events = ref<Event[]>([])
 const loading = ref(false)
 const error = ref('')
+const showForm = ref(false)
+const selectedEvent = ref<Event | null>(null)
 
 const fetchEvents = async () => {
   loading.value = true
@@ -78,6 +95,35 @@ const fetchEvents = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const openCreateForm = () => {
+  selectedEvent.value = null
+  showForm.value = true
+}
+
+const openEditForm = (event: Event) => {
+  selectedEvent.value = event
+  showForm.value = true
+}
+
+const closeForm = () => {
+  showForm.value = false
+  selectedEvent.value = null
+}
+
+const handleEventSave = (savedEvent: Event) => {
+  if (selectedEvent.value) {
+    // Update existing event
+    const index = events.value.findIndex(e => e.id === savedEvent.id)
+    if (index !== -1) {
+      events.value[index] = savedEvent
+    }
+  } else {
+    // Add new event
+    events.value.unshift(savedEvent)
+  }
+  closeForm()
 }
 
 const deleteEvent = async (id: number) => {
@@ -103,7 +149,7 @@ const deleteEvent = async (id: number) => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString('en-UK', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
