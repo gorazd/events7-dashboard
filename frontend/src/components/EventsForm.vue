@@ -34,19 +34,69 @@
         </div>
 
         <div class="form-group">
-          <label for="type">Event Type *</label>
-          <select
-            id="type"
-            v-model="formData.type"
-            required
-            class="form-select"
-          >
-            <option value="">Select event type</option>
-            <option value="crosspromo">Cross Promo</option>
-            <option value="liveops">Live Ops</option>
-            <option value="app">App</option>
-            <option value="ads">Ads</option>
-          </select>
+          <label class="form-label">Event Type *</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input
+                id="type-crosspromo"
+                v-model="formData.type"
+                type="radio"
+                value="crosspromo"
+                name="eventType"
+                class="radio-input"
+                required
+              />
+              <label for="type-crosspromo" class="radio-label">
+                <span class="radio-custom"></span>
+                <span class="radio-text">Cross Promo</span>
+              </label>
+            </div>
+        
+            <div class="radio-option">
+              <input
+                id="type-liveops"
+                v-model="formData.type"
+                type="radio"
+                value="liveops"
+                name="eventType"
+                class="radio-input"
+              />
+              <label for="type-liveops" class="radio-label">
+                <span class="radio-custom"></span>
+                <span class="radio-text">Live Ops</span>
+              </label>
+            </div>
+        
+            <div class="radio-option">
+              <input
+                id="type-app"
+                v-model="formData.type"
+                type="radio"
+                value="app"
+                name="eventType"
+                class="radio-input"
+              />
+              <label for="type-app" class="radio-label">
+                <span class="radio-custom"></span>
+                <span class="radio-text">App</span>
+              </label>
+            </div>
+        
+            <div class="radio-option">
+              <input
+                id="type-ads"
+                v-model="formData.type"
+                type="radio"
+                value="ads"
+                name="eventType"
+                class="radio-input"
+              />
+              <label for="type-ads" class="radio-label">
+                <span class="radio-custom"></span>
+                <span class="radio-text">Ads</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
