@@ -15,6 +15,9 @@ import EventsList from './components/EventsList.vue'
 </template>
 
 <style scoped>
+.app {
+  width: 100vw;
+}
 .app__skip-link {
   position: absolute;
   top: -40px;

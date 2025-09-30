@@ -7,6 +7,7 @@ A full-stack web dashboard for Analytics teams to define and manage client event
 - [Run](#how-to-run-the-dashboard)
 - [Testing](#testing)
 - [Assumptions](#assumptions-and-decisions)
+- [Future improvements](#future-improvements)
 
 ## Technology
 
@@ -145,3 +146,9 @@ npm run test:watch  # Run tests in watch mode
 - **Environment Variables**: Used `.env` files for sensitive configuration (API credentials, database URLs)
 - **CORS Configuration**: Added CORS support for local development (frontend on 5173, backend on 3001)
 - **Security First**: API credentials only stored on backend, never exposed to frontend
+
+
+## Future improvements
+- **Mobile styles**
+- **Column sorting**
+...
