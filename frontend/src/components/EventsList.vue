@@ -212,7 +212,6 @@ onMounted(() => {
   }
 
   .events-list__item > *:last-child {
-    align-self: flex-end;
     justify-self: flex-end;
   }
   
