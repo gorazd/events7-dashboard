@@ -17,3 +17,34 @@ A full-stack web dashboard for Analytics teams to define and manage client event
 - **TypeORM** - Database ORM
 - **SQLite** - Database (development)
 - **Vitest** - Testing framework
+
+## Setup & Installation
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd events7-dashboard
+```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create `.env` file in `backend/` directory:
+```env
+ADS_API_USER=fun7user
+ADS_API_PASS=fun7pass
+DATABASE_URL=sqlite://./events.db
+NODE_ENV=development
+PORT=3000
+```
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
