@@ -1,23 +1,23 @@
 <template>
   <section 
-    class="event-form-container" 
+    class="event-form" 
     role="dialog" 
     aria-modal="true" 
     aria-labelledby="form-title"
     @keydown="handleFormKeydown"
   >
-    <div class="form-overlay" @click="closeForm"></div>
-    <article class="event-form">
-      <header class="form-header">
-        <h3 id="form-title">{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h3>
-        <button @click="closeForm" class="close-btn" aria-label="Close form">&times;</button>
+    <div class="event-form__overlay" @click="closeForm"></div>
+    <article class="event-form__container">
+      <header class="event-form__header">
+        <h3 id="form-title" class="event-form__title">{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h3>
+        <button @click="closeForm" class="event-form__close-btn" aria-label="Close form">&times;</button>
       </header>
       
       <form @submit.prevent="handleSubmit" @keydown="handleFormKeydown">
-        <div class="form-group">
-          <label for="name">
+        <div class="event-form__group">
+          <label for="name" class="event-form__label">
             Event Name 
-            <span class="required-indicator" aria-label="required">*</span>
+            <span class="event-form__required" aria-label="required">*</span>
           </label>
           <input
             id="name"
@@ -25,126 +25,126 @@
             type="text"
             required
             placeholder="Enter event name"
-            class="form-input"
-            :class="{ 'error': fieldErrors.name }"
+            class="event-form__input"
+            :class="{ 'event-form__input--error': fieldErrors.name }"
             :aria-invalid="!!fieldErrors.name"
             :aria-describedby="fieldErrors.name ? 'name-error' : 'name-hint'"
           />
-          <small id="name-hint" class="form-hint">Will be saved as: {{ toKebabCase(formData.name) }}</small>
-          <div v-if="fieldErrors.name" id="name-error" class="field-error" role="alert">
+          <small id="name-hint" class="event-form__hint">Will be saved as: {{ toKebabCase(formData.name) }}</small>
+          <div v-if="fieldErrors.name" id="name-error" class="event-form__error" role="alert">
             {{ fieldErrors.name }}
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="description">
+        <div class="event-form__group">
+          <label for="description" class="event-form__label">
             Description 
-            <span class="required-indicator" aria-label="required">*</span>
+            <span class="event-form__required" aria-label="required">*</span>
           </label>
           <textarea
             id="description"
             v-model="formData.description"
             required
             placeholder="Enter event description"
-            class="form-textarea"
+            class="event-form__textarea"
             rows="3"
-            :class="{ 'error': fieldErrors.description }"
+            :class="{ 'event-form__textarea--error': fieldErrors.description }"
             :aria-invalid="!!fieldErrors.description"
             :aria-describedby="fieldErrors.description ? 'description-error' : undefined"
           ></textarea>
-          <div v-if="fieldErrors.description" id="description-error" class="field-error" role="alert">
+          <div v-if="fieldErrors.description" id="description-error" class="event-form__error" role="alert">
             {{ fieldErrors.description }}
           </div>
         </div>
 
-        <div class="form-group">
-          <fieldset class="form-fieldset">
-            <legend class="form-label">
+        <div class="event-form__group">
+          <fieldset class="event-form__fieldset">
+            <legend class="event-form__label">
               Event Type 
-              <span class="required-indicator" aria-label="required">*</span>
+              <span class="event-form__required" aria-label="required">*</span>
             </legend>
-            <div class="radio-group" :aria-describedby="fieldErrors.type ? 'type-error' : undefined">
-            <div class="radio-option">
+            <div class="event-form__radio-group" :aria-describedby="fieldErrors.type ? 'type-error' : undefined">
+            <div class="event-form__radio-option">
               <input
                 id="type-crosspromo"
                 v-model="formData.type"
                 type="radio"
                 :value="EVENT_TYPES.CROSSPROMO"
                 name="eventType"
-                class="radio-input"
+                class="event-form__radio-input"
                 required
                 :aria-invalid="!!fieldErrors.type"
               />
-              <label for="type-crosspromo" class="radio-label">
-                <span class="radio-custom"></span>
-                <span class="radio-text">Cross Promo</span>
+              <label for="type-crosspromo" class="event-form__radio-label">
+                <span class="event-form__radio-custom"></span>
+                <span class="event-form__radio-text">Cross Promo</span>
               </label>
             </div>
         
-            <div class="radio-option">
+            <div class="event-form__radio-option">
               <input
                 id="type-liveops"
                 v-model="formData.type"
                 type="radio"
                 :value="EVENT_TYPES.LIVEOPS"
                 name="eventType"
-                class="radio-input"
+                class="event-form__radio-input"
                 :aria-invalid="!!fieldErrors.type"
               />
-              <label for="type-liveops" class="radio-label">
-                <span class="radio-custom"></span>
-                <span class="radio-text">Live Ops</span>
+              <label for="type-liveops" class="event-form__radio-label">
+                <span class="event-form__radio-custom"></span>
+                <span class="event-form__radio-text">Live Ops</span>
               </label>
             </div>
         
-            <div class="radio-option">
+            <div class="event-form__radio-option">
               <input
                 id="type-app"
                 v-model="formData.type"
                 type="radio"
                 :value="EVENT_TYPES.APP"
                 name="eventType"
-                class="radio-input"
+                class="event-form__radio-input"
                 :aria-invalid="!!fieldErrors.type"
               />
-              <label for="type-app" class="radio-label">
-                <span class="radio-custom"></span>
-                <span class="radio-text">App</span>
+              <label for="type-app" class="event-form__radio-label">
+                <span class="event-form__radio-custom"></span>
+                <span class="event-form__radio-text">App</span>
               </label>
             </div>
         
-            <div class="radio-option" :class="{ 'disabled': !adsTypeAllowed }">
+            <div class="event-form__radio-option event-form__radio-option--disabled" :class="{ 'event-form__radio-option--disabled': !adsTypeAllowed }">
               <input
                 id="type-ads"
                 v-model="formData.type"
                 type="radio"
                 :value="EVENT_TYPES.ADS"
                 name="eventType"
-                class="radio-input"
+                class="event-form__radio-input"
                 :disabled="!adsTypeAllowed"
                 :aria-invalid="!!fieldErrors.type"
               />
-              <label for="type-ads" class="radio-label" :class="{ 'disabled': !adsTypeAllowed }">
-                <span class="radio-custom"></span>
-                <span class="radio-text">
+              <label for="type-ads" class="event-form__radio-label event-form__radio-label--disabled" :class="{ 'event-form__radio-label--disabled': !adsTypeAllowed }">
+                <span class="event-form__radio-custom"></span>
+                <span class="event-form__radio-text">
                   Ads
-                  <small v-if="!adsTypeAllowed" class="permission-note">
+                  <small v-if="!adsTypeAllowed" class="event-form__permission-note">
                     (Not available in your region)
                   </small>
                 </span>
               </label>
             </div>
           </div>
-            <div v-if="fieldErrors.type" id="type-error" class="field-error" role="alert">
+            <div v-if="fieldErrors.type" id="type-error" class="event-form__error" role="alert">
               {{ fieldErrors.type }}
             </div>
           </fieldset>
         </div>
 
-        <div class="form-group">
-          <label for="priority">
+        <div class="event-form__group">
+          <label for="priority" class="event-form__label">
             Priority 
-            <span class="required-indicator" aria-label="required">*</span>
+            <span class="event-form__required" aria-label="required">*</span>
           </label>
           <input
             id="priority"
@@ -154,28 +154,28 @@
             min="0"
             max="10"
             placeholder="0-10"
-            class="form-input"
-            :class="{ 'error': fieldErrors.priority }"
+            class="event-form__input"
+            :class="{ 'event-form__input--error': fieldErrors.priority }"
             :aria-invalid="!!fieldErrors.priority"
             :aria-describedby="fieldErrors.priority ? 'priority-error' : 'priority-hint'"
           />
-          <small id="priority-hint" class="form-hint">Enter a value between 0-10</small>
-          <div v-if="fieldErrors.priority" id="priority-error" class="field-error" role="alert">
+          <small id="priority-hint" class="event-form__hint">Enter a value between 0-10</small>
+          <div v-if="fieldErrors.priority" id="priority-error" class="event-form__error" role="alert">
             {{ fieldErrors.priority }}
           </div>
         </div>
 
-        <div class="form-actions">
-          <button type="button" @click="closeForm" class="cancel-btn">
+        <div class="event-form__actions">
+          <button type="button" @click="closeForm" class="event-form__btn event-form__btn--cancel">
             Cancel
           </button>
-          <button type="submit" :disabled="loading" class="submit-btn">
+          <button type="submit" :disabled="loading" class="event-form__btn event-form__btn--submit">
             {{ loading ? 'Saving...' : (isEditing ? 'Update Event' : 'Create Event') }}
           </button>
         </div>
       </form>
 
-      <footer v-if="error" class="error-message">
+      <footer v-if="error" class="event-form__footer-error">
         {{ error }}
       </footer>
     </article>
@@ -413,7 +413,7 @@ const handleFormKeydown = (event: KeyboardEvent) => {
 </script>
 
 <style scoped>
-.event-form-container {
+.event-form {
   position: fixed;
   top: 0;
   left: 0;
@@ -425,7 +425,7 @@ const handleFormKeydown = (event: KeyboardEvent) => {
   justify-content: center;
 }
 
-.form-overlay {
+.event-form__overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -434,19 +434,19 @@ const handleFormKeydown = (event: KeyboardEvent) => {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.event-form {
+.event-form__container {
   position: relative;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 500px;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
   margin: 20px;
 }
 
-.form-header {
+.event-form__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -455,12 +455,12 @@ const handleFormKeydown = (event: KeyboardEvent) => {
   margin-bottom: 20px;
 }
 
-.form-header h3 {
+.event-form__title {
   margin: 0;
   color: #333;
 }
 
-.close-btn {
+.event-form__close-btn {
   background: none;
   border: none;
   font-size: 24px;
@@ -474,7 +474,7 @@ const handleFormKeydown = (event: KeyboardEvent) => {
   justify-content: center;
 }
 
-.close-btn:hover {
+.event-form__close-btn:hover {
   color: #000;
 }
 
@@ -482,24 +482,19 @@ form {
   padding: 0 20px 20px;
 }
 
-.form-group {
+.event-form__group {
   margin-bottom: 20px;
 }
 
-.form-group label,
-.form-label {
+.event-form__label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
   color: #333;
 }
 
-.form-label {
-  margin-bottom: 10px;
-}
-
-.form-input,
-.form-textarea {
+.event-form__input,
+.event-form__textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -508,19 +503,19 @@ form {
   font-family: inherit;
 }
 
-.form-input:focus,
-.form-textarea:focus {
+.event-form__input:focus,
+.event-form__textarea:focus {
   outline: none;
-  border-color: #42b883;
+  border-color: var(--color);
   box-shadow: 0 0 0 2px rgba(66, 184, 131, 0.2);
 }
 
-.form-textarea {
+.event-form__textarea {
   resize: vertical;
   min-height: 80px;
 }
 
-.form-hint {
+.event-form__hint {
   display: block;
   margin-top: 4px;
   font-size: 0.8em;
@@ -528,26 +523,26 @@ form {
   font-style: italic;
 }
 
-.radio-group {
+.event-form__radio-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.radio-option {
+.event-form__radio-option {
   display: flex;
   align-items: center;
 }
 
-.radio-option.disabled {
+.event-form__radio-option--disabled {
   opacity: 0.5;
 }
 
-.radio-input {
+.event-form__radio-input {
   display: none;
 }
 
-.radio-label {
+.event-form__radio-label {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -559,28 +554,28 @@ form {
   background: #fff;
 }
 
-.radio-label:hover {
-  border-color: #42b883;
+.event-form__radio-label:hover {
+  border-color: var(--color);
   background: #f8fffe;
 }
 
-.radio-label.disabled {
+.event-form__radio-label--disabled {
   cursor: not-allowed;
   color: #999;
 }
 
-.radio-label.disabled:hover {
+.event-form__radio-label--disabled:hover {
   border-color: #ddd;
   background: #fff;
 }
 
-.radio-input:checked + .radio-label {
-  border-color: #42b883;
+.event-form__radio-input:checked + .event-form__radio-label {
+  border-color: var(--color);
   background: #e8f5e8;
   color: #2c5530;
 }
 
-.radio-custom {
+.event-form__radio-custom {
   width: 16px;
   height: 16px;
   border: 2px solid #ddd;
@@ -590,12 +585,12 @@ form {
   transition: all 0.2s ease;
 }
 
-.radio-input:checked + .radio-label .radio-custom {
-  border-color: #42b883;
-  background: #42b883;
+.event-form__radio-input:checked + .event-form__radio-label .event-form__radio-custom {
+  border-color: var(--color);
+  background: var(--color);
 }
 
-.radio-input:checked + .radio-label .radio-custom::after {
+.event-form__radio-input:checked + .event-form__radio-label .event-form__radio-custom::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -607,12 +602,12 @@ form {
   background: white;
 }
 
-.radio-text {
+.event-form__radio-text {
   font-weight: 500;
   font-size: 14px;
 }
 
-.permission-note {
+.event-form__permission-note {
   display: block;
   font-size: 0.75em;
   color: #999;
@@ -620,15 +615,14 @@ form {
   margin-top: 2px;
 }
 
-.form-actions {
+.event-form__actions {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   margin-top: 30px;
 }
 
-.cancel-btn,
-.submit-btn {
+.event-form__btn {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -639,78 +633,77 @@ form {
 }
 
 /* Enhanced focus styles for accessibility */
-.cancel-btn:focus-visible,
-.submit-btn:focus-visible,
-.close-btn:focus-visible {
+.event-form__btn:focus-visible,
+.event-form__close-btn:focus-visible {
   outline: 2px solid #646cff;
   outline-offset: 2px;
 }
 
-.cancel-btn {
+.event-form__btn--cancel {
   background: #f5f5f5;
   color: #666;
 }
 
-.cancel-btn:hover {
+.event-form__btn--cancel:hover {
   background: #e5e5e5;
 }
 
-.submit-btn {
-  background: #42b883;
+.event-form__btn--submit {
+  background: var(--color);
   color: white;
 }
 
-.submit-btn:hover:not(:disabled) {
+.event-form__btn--submit:hover:not(:disabled) {
   background: #369870;
 }
 
-.submit-btn:disabled {
+.event-form__btn--submit:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
 /* Form element focus styles */
-.form-input:focus-visible,
-.form-textarea:focus-visible {
+.event-form__input:focus-visible,
+.event-form__textarea:focus-visible {
   outline: 2px solid #646cff;
   outline-offset: 2px;
   border-color: #646cff;
 }
 
-.radio-input:focus-visible + .radio-label {
+.event-form__radio-input:focus-visible + .event-form__radio-label {
   outline: 2px solid #646cff;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Required indicator styling */
-.required-indicator {
+.event-form__required {
   color: #d73a49;
   font-weight: bold;
   margin-left: 4px;
 }
 
 /* Form fieldset styling */
-.form-fieldset {
+.event-form__fieldset {
   border: none;
   margin: 0;
   padding: 0;
 }
 
-.form-fieldset legend {
+.event-form__fieldset legend {
   font-weight: bold;
   margin-bottom: 10px;
   padding: 0;
 }
 
 /* Error states */
-.form-input.error,
-.form-textarea.error {
+.event-form__input--error,
+.event-form__textarea--error {
   border-color: #d73a49;
   background-color: #fff5f5;
 }
 
-.field-error {
+.event-form__error {
   color: #d73a49;
   font-size: 0.875rem;
   margin-top: 4px;
@@ -719,19 +712,19 @@ form {
   gap: 4px;
 }
 
-.field-error::before {
+.event-form__error::before {
   content: "⚠";
   font-weight: bold;
 }
 
-.form-hint {
+.event-form__hint {
   color: #6a737d;
   font-size: 0.875rem;
   margin-top: 4px;
   display: block;
 }
 
-.error-message {
+.event-form__footer-error {
   margin-top: 15px;
   padding: 10px;
   background: #fee;
@@ -743,7 +736,7 @@ form {
 
 /* Responsive: Stack vertically on smaller screens */
 @media (max-width: 480px) {
-  .radio-group {
+  .event-form__radio-group {
     grid-template-columns: 1fr;
     gap: 8px;
   }

@@ -3,19 +3,19 @@ import EventsList from './components/EventsList.vue'
 </script>
 
 <template>
-  <div id="app">
-    <a href="#main-content" class="skip-to-content">Skip to main content</a>
-    <header>
-      <h1>Events Dashboard</h1>
+  <div class="app">
+    <a href="#main-content" class="app__skip-link">Skip to main content</a>
+    <header class="app__header">
+      <h1 class="app__title">Events7 Dashboard</h1>
     </header>
-    <main id="main-content">
+    <main id="main-content" class="app__main">
       <EventsList />
     </main>
   </div>
 </template>
 
 <style scoped>
-.skip-to-content {
+.app__skip-link {
   position: absolute;
   top: -40px;
   left: 6px;
@@ -28,7 +28,8 @@ import EventsList from './components/EventsList.vue'
   transition: top 0.3s;
 }
 
-.skip-to-content:focus {
+.app__skip-link:focus {
   top: 6px;
 }
+
 </style>
