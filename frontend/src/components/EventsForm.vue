@@ -1,5 +1,11 @@
 <template>
-  <section class="event-form-container" role="dialog" aria-modal="true" aria-labelledby="form-title">
+  <section 
+    class="event-form-container" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="form-title"
+    @keydown="handleFormKeydown"
+  >
     <div class="form-overlay" @click="closeForm"></div>
     <article class="event-form">
       <header class="form-header">
@@ -7,7 +13,7 @@
         <button @click="closeForm" class="close-btn" aria-label="Close form">&times;</button>
       </header>
       
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" @keydown="handleFormKeydown">
         <div class="form-group">
           <label for="name">Event Name *</label>
           <input
@@ -274,6 +280,35 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
+
+// Keyboard navigation handler
+const handleFormKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    closeForm()
+  }
+  
+  // Tab trapping for modal accessibility
+  if (event.key === 'Tab') {
+    const formElement = event.currentTarget as HTMLElement
+    const focusableElements = formElement.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    ) as NodeListOf<HTMLElement>
+    
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+    
+    if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault()
+      firstElement?.focus()
+    }
+    
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault()
+      lastElement?.focus()
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -499,6 +534,15 @@ form {
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+/* Enhanced focus styles for accessibility */
+.cancel-btn:focus-visible,
+.submit-btn:focus-visible,
+.close-btn:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
 }
 
 .cancel-btn {
@@ -522,6 +566,20 @@ form {
 .submit-btn:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+/* Form element focus styles */
+.form-input:focus-visible,
+.form-textarea:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+  border-color: #646cff;
+}
+
+.radio-input:focus-visible + .radio-label {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .error-message {

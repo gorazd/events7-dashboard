@@ -40,6 +40,8 @@
           :key="event.id" 
           class="event-card"
           :class="`event-${event.type}`"
+          tabindex="0"
+          @keydown="handleEventCardKeydown($event, event)"
         >
           <span class="event-id">{{ event.id }}</span>
           <header class="event-header">
@@ -56,10 +58,20 @@
           <time class="updated">{{ formatDate(event.updatedAt) }}</time>
 
           <nav class="event-actions">
-            <button @click="openEditForm(event)" class="edit-btn">
+            <button 
+              @click="openEditForm(event)" 
+              @keydown="handleButtonKeydown"
+              class="edit-btn"
+              :aria-label="`Edit event ${event.name}`"
+            >
               Edit
             </button>
-            <button @click="deleteEvent(event.id)" class="delete-btn">
+            <button 
+              @click="deleteEvent(event.id)" 
+              @keydown="handleButtonKeydown"
+              class="delete-btn"
+              :aria-label="`Delete event ${event.name}`"
+            >
               Delete
             </button>
           </nav>
@@ -158,6 +170,22 @@ const formatDate = (dateString: string) => {
   })
 }
 
+// Keyboard navigation handlers
+const handleEventCardKeydown = (event: KeyboardEvent, eventData: Event) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    openEditForm(eventData)
+  }
+}
+
+const handleButtonKeydown = (event: KeyboardEvent) => {
+  // Allow default button behavior for Enter and Space
+  if (event.key === 'Enter' || event.key === ' ') {
+    // Let the click handler handle the action
+    return
+  }
+}
+
 // Fetch events when component mounts
 onMounted(() => {
   fetchEvents()
@@ -170,11 +198,52 @@ onMounted(() => {
     grid-template-columns: 1fr 3fr 1fr 4fr 1fr 1fr 2fr 2fr;
     align-items: baseline;
   }
+
   .event-header-row {
     font-weight: bold;
     font-size: .75em;
     text-transform: uppercase;
     background: #f5f5f5;
     border-bottom: 1px solid #ddd;
+  }
+
+  /* Keyboard focus styles */
+  .event-card:focus {
+    outline: 2px solid #646cff;
+    outline-offset: 2px;
+    background-color: #f8f9ff;
+    border-radius: 4px;
+  }
+
+  .event-card:focus-visible {
+    outline: 2px solid #646cff;
+    outline-offset: 2px;
+    background-color: #f8f9ff;
+    border-radius: 4px;
+  }
+
+  /* Enhanced button styling for accessibility */
+  .edit-btn, .delete-btn, .create-btn, .refresh-btn {
+    padding: 8px 16px;
+    margin: 4px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .edit-btn:hover, .create-btn:hover {
+    background-color: #e8f4fd;
+    border-color: #0969da;
+  }
+
+  .delete-btn:hover {
+    background-color: #ffebe9;
+    border-color: #d73a49;
+  }
+
+  .refresh-btn:hover:not(:disabled) {
+    background-color: #f6f8fa;
+    border-color: #656d76;
   }
 </style>
