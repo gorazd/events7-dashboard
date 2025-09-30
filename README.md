@@ -2,6 +2,10 @@
 
 A full-stack web dashboard for Analytics teams to define and manage client events for tracking (button clicks, app events, etc.).
 
+- [Technology Stack](#technology)
+- [Install](#setup--installation)
+- [Run](#how-to-run-the-dashboard)
+- [Project Decisions](#assumptions-and-decisions)
 
 ## Technology
 
