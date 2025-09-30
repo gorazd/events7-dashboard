@@ -56,7 +56,7 @@ npm install
 ```bash
 cd backend
 npm run start:dev
-# Server will run on http://localhost:3000
+# Server will run on http://localhost:3001
 ```
 
 #### Frontend (Terminal 2):
