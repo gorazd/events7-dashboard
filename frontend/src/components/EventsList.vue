@@ -1,6 +1,9 @@
 <template>
   <div class="events-container">
     <h2>Events Dashboard</h2>
+    <div>
+      <strong>Total Events: {{ events.length }}</strong>
+    </div>
     
     <div class="actions">
       <button @click="openCreateForm" class="create-btn">
@@ -16,25 +19,38 @@
     <div v-else-if="events.length === 0" class="empty">No events found</div>
     
     <div v-else class="events-grid">
+      <!-- Grid Header -->
+      <div class="event-card event-header-row">
+        <span class="event-id"><strong>ID</strong></span>
+        <div class="event-header"><strong>Name</strong></div>
+        <span class="event-type"><strong>Type</strong></span>
+        <p class="event-description"><strong>Description</strong></p>
+        <div class="event-footer"><strong>Priority</strong></div>
+        <span class="created"><strong>Created</strong></span>
+        <span class="created"><strong>Last Updated</strong></span>
+        <div class="event-actions"><strong>Actions</strong></div>
+      </div>
+      <!-- Event Rows -->
       <div 
         v-for="event in events" 
         :key="event.id" 
         class="event-card"
         :class="`event-${event.type}`"
       >
+      <span class="event-id">{{ event.id }}</span>
         <div class="event-header">
-          <span class="event-id">{{ event.id }}</span>
           <h3>{{ event.name }}</h3>
-          <span class="event-type">{{ event.type }}</span>
         </div>
+        <span class="event-type">{{ event.type }}</span>
         
         <p class="event-description">{{ event.description }}</p>
         
         <div class="event-footer">
-          <span class="priority">Priority: {{ event.priority }}</span>
-          <span class="created">{{ formatDate(event.createdAt) }}</span>
+          <span class="priority">{{ event.priority }}</span>
         </div>
-        
+        <span class="created">{{ formatDate(event.createdAt) }}</span>
+        <span class="updated">{{ formatDate(event.updatedAt) }}</span>
+
         <div class="event-actions">
           <button @click="openEditForm(event)" class="edit-btn">
             Edit
@@ -59,16 +75,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import EventsForm from './EventsForm.vue'
-
-interface Event {
-  id: number
-  name: string
-  description: string
-  type: 'crosspromo' | 'liveops' | 'app' | 'ads'
-  priority: number
-  createdAt: string
-  updatedAt: string
-}
+import { EventsApi, type Event } from '../services/api'
 
 const events = ref<Event[]>([])
 const loading = ref(false)
@@ -81,13 +88,7 @@ const fetchEvents = async () => {
   error.value = ''
   
   try {
-    const response = await fetch('http://localhost:3001/events')
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    const data = await response.json()
+    const data = await EventsApi.fetchEvents()
     events.value = data
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unknown error occurred'
@@ -132,14 +133,7 @@ const deleteEvent = async (id: number) => {
   }
 
   try {
-    const response = await fetch(`http://localhost:3001/events/${id}`, {
-      method: 'DELETE'
-    })
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
+    await EventsApi.deleteEvent(id)
     // Remove from local array
     events.value = events.value.filter(event => event.id !== id)
   } catch (err) {
@@ -165,5 +159,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
+  .event-card {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr 4fr 1fr 1fr 2fr 2fr;
+    align-items: baseline;
+  }
+  .event-header-row {
+    font-weight: bold;
+    font-size: .75em;
+    text-transform: uppercase;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
 </style>
