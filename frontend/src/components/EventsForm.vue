@@ -18,6 +18,7 @@
             placeholder="Enter event name"
             class="form-input"
           />
+          <small class="form-hint">Will be saved as: {{ toKebabCase(formData.name) }}</small>
         </div>
 
         <div class="form-group">
@@ -155,6 +156,16 @@ const closeForm = () => {
   emit('close')
 }
 
+const toKebabCase = (str: string): string => {
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+}
+
 const handleSubmit = async () => {
   loading.value = true
   error.value = ''
@@ -172,7 +183,7 @@ const handleSubmit = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: formData.name,
+        name: toKebabCase(formData.name),
         description: formData.description,
         type: formData.type,
         priority: formData.priority,
