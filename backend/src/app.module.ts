@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
+import { AdsPermissionModule } from './ads-permision/ads-permision.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EventsModule } from './events/events.module';
       logging: true,
     }),
     EventsModule,
+    AdsPermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
