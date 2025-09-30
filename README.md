@@ -3,18 +3,12 @@
 A full-stack web dashboard for Analytics teams to define and manage client events for tracking (button clicks, app events, etc.).
 
 - [Technology Stack](#technology)
-- [Install](#setup--installation)
+- [Install](#setup--installation)  
 - [Run](#how-to-run-the-dashboard)
-- [Project Decisions](#assumptions-and-decisions)
+- [Testing](#testing)
+- [Assumptions](#assumptions-and-decisions)
 
 ## Technology
-
-### Frontend
-- **Vue 3** with TypeScript (Options API)
-- **Vite** - Build tool and dev server
-- **TypeScript** - Type safety throughout
-- **Native Fetch API** - HTTP requests (no Axios)
-- **Vitest** - Unit and integration testing
 
 ### Backend
 - **NestJS** - Node.js framework (TypeScript)
@@ -22,22 +16,46 @@ A full-stack web dashboard for Analytics teams to define and manage client event
 - **SQLite** - Database (development)
 - **Vitest** - Testing framework
 
-## Setup & Installation
+### Frontend
+- **Vue 3** with TypeScript (Composition API)
+- **Vite** - Build tool and dev server
+- **TypeScript** - Type safety throughout
+- **Native Fetch API** - HTTP requests (no Axios)
+- **Vitest** - Unit and integration testing
+- **Vue Test Utils** - Vue component testing utilities
+
+
+## Setup & Installation (steps 1-3)
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/gorazd/events7-dashboard.git
 cd events7-dashboard
 ```
 
-### 2. Backend Setup
+### 2. Install All Dependencies (Recommended)
+```bash
+npm run install:all     # Installs dependencies for root, frontend, and backend
+```
+
+**OR install manually:**
+
+- Backend Setup
 
 ```bash
 cd backend
 npm install
 ```
 
-Create `.env` file in `backend/` directory:
+
+- Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+### 3.  Create `.env` file in `backend/` directory:
 ```env
 ADS_API_URL=https://europe-west1-o7tools.cloudfunctions.net/fun7-ad-partner-expertise-test
 ADS_API_USER=fun7user
@@ -47,28 +65,54 @@ NODE_ENV=development
 PORT=3001
 ```
 
-### 3. Frontend Setup
+## How to run the dashboard
+### Development
 
+#### Option A: Run Both Simultaneously (Recommended)
 ```bash
-cd frontend
-npm install
+npm run dev             # Runs both frontend and backend concurrently
+# Frontend: http://localhost:5173
+# Backend: http://localhost:3001
 ```
 
-## How to run the dashboard
-### Developement
-
-#### Backend (Terminal 1):
+#### Option B: Run Separately
+**Backend (Terminal 1):**
 ```bash
 cd backend
-npm run start:dev
-# Server will run on http://localhost:3001
+npm run start:dev       # Server will run on http://localhost:3001
 ```
 
-#### Frontend (Terminal 2):
-```bash
+**Frontend (Terminal 2):**
+```bash  
 cd frontend
-npm run dev
-# Application will run on http://localhost:5173
+npm run dev             # Application will run on http://localhost:5173
+```
+
+### Testing
+
+
+#### Quick Test Commands (from root directory)
+```bash
+npm run test:all        # Run all tests (frontend + backend + integration)
+npm run test:frontend   # Run frontend tests only (4 tests)
+npm run test:backend    # Run backend unit tests only (51 tests)
+npm run test:integration # Run integration tests only (20 tests)
+```
+
+#### Backend Tests (from backend directory)
+```bash
+cd backend
+
+npm run test                # Run unit tests (51 tests)
+npm run test:watch          # Run unit tests in watch mode  
+npm run test:cov            # Run unit tests with coverage report
+npm run test:e2e:events     # Run integration tests (20 tests)
+```
+
+#### Frontend Tests (from frontend directory)
+```bash
+npm run test        # Run all tests (4 tests)
+npm run test:watch  # Run tests in watch mode
 ```
 
 ## Assumptions and decisions
@@ -87,8 +131,15 @@ npm run dev
 
 ### **Validation and rules**
 - **Kebab-Case Convention**: Enforced kebab-case format for event names (e.g., "click-event") - not specified in original but follows best practices
-- **Priority Range Validation**: Implemented strict 0-10 priority validation as specified
 - **Required Fields**: All fields are mandatory with proper validation
+
+### **Testing Strategy**
+- **Comprehensive Coverage**: 75 tests covering unit and integration scenarios
+- **Pyramid Approach**: Many unit tests (fast), fewer integration tests (slower but realistic)
+- **Mocked Dependencies**: External APIs mocked for predictable unit testing
+- **Real Database Testing**: Integration tests use in-memory SQLite for real data persistence
+- **Validation Testing**: All business rules and edge cases covered
+- **TypeScript Testing**: Full type safety maintained in test code
 
 ### **API and security**
 - **Environment Variables**: Used `.env` files for sensitive configuration (API credentials, database URLs)

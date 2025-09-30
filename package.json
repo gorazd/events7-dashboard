@@ -1,0 +1,24 @@
+{
+  "name": "events7-dashboard",
+  "version": "1.0.0",
+  "description": "Full-stack web dashboard for Analytics teams to define and manage client events",
+  "private": true,
+  "scripts": {
+    "test": "npm run test:frontend && npm run test:backend && npm run test:integration",
+    "test:frontend": "echo '=== Frontend Tests ===' && cd frontend && npm test",
+    "test:backend": "echo '=== Backend Unit Tests ===' && cd backend && npm test",
+    "test:integration": "echo '=== Backend Integration Tests ===' && cd backend && npm run test:e2e:events",
+    "test:all": "echo '🧪 Running all tests...' && npm run test:frontend && npm run test:backend && npm run test:integration && echo '✅ All tests completed!'",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run start:dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
