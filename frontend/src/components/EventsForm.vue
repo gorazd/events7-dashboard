@@ -134,6 +134,7 @@
                 </span>
               </label>
             </div>
+          </div>
             <div v-if="fieldErrors.type" id="type-error" class="field-error" role="alert">
               {{ fieldErrors.type }}
             </div>
