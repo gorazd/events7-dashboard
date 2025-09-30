@@ -39,7 +39,7 @@ ADS_API_USER=fun7user
 ADS_API_PASS=fun7pass
 DATABASE_URL=sqlite://./events.db
 NODE_ENV=development
-PORT=3000
+PORT=3001
 ```
 
 ### 3. Frontend Setup
@@ -47,4 +47,21 @@ PORT=3000
 ```bash
 cd frontend
 npm install
+```
+
+## How to run the dashboard
+### Developement
+
+#### Backend (Terminal 1):
+```bash
+cd backend
+npm run start:dev
+# Server will run on http://localhost:3000
+```
+
+#### Frontend (Terminal 2):
+```bash
+cd frontend
+npm run dev
+# Application will run on http://localhost:5173
 ```
