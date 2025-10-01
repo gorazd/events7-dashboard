@@ -26,7 +26,7 @@ A full-stack web dashboard for Analytics teams to define and manage client event
 - **Vue Test Utils** - Vue component testing utilities
 
 
-## Setup & Installation (steps 1-3)
+## Setup & Installation
 
 ### 1. Clone the Repository
 ```bash
