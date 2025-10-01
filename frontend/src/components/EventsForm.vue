@@ -113,7 +113,7 @@
               </label>
             </div>
         
-            <div class="event-form__radio-option event-form__radio-option--disabled" :class="{ 'event-form__radio-option--disabled': !adsTypeAllowed }">
+            <div class="event-form__radio-option" :class="{ 'event-form__radio-option--disabled': !adsTypeAllowed }">
               <input
                 id="type-ads"
                 v-model="formData.type"
@@ -124,7 +124,7 @@
                 :disabled="!adsTypeAllowed"
                 :aria-invalid="!!fieldErrors.type"
               />
-              <label for="type-ads" class="event-form__radio-label event-form__radio-label--disabled" :class="{ 'event-form__radio-label--disabled': !adsTypeAllowed }">
+              <label for="type-ads" class="event-form__radio-label" :class="{ 'event-form__radio-label--disabled': !adsTypeAllowed }">
                 <span class="event-form__radio-custom"></span>
                 <span class="event-form__radio-text">
                   Ads
